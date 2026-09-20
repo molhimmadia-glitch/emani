@@ -19,6 +19,8 @@
   body {
     background: #ffffff !important;
     color: #000000 !important;
+    margin: 0 !important;
+    padding: 0 !important;
   }
   .no-print {
     display: none !important;
@@ -26,9 +28,19 @@
   .print-only {
     display: block !important;
   }
+  .invoice-sheet, #emani-heritage-invoice {
+    box-shadow: none !important;
+    border: 1px solid #DFC8A5 !important;
+    max-width: 100% !important;
+    width: 100% !important;
+    margin: 0 auto !important;
+    print-color-adjust: exact !important;
+    -webkit-print-color-adjust: exact !important;
+    page-break-inside: avoid !important;
+  }
   @page {
-    margin: 0.5cm;
-    size: auto;
+    margin: 0.8cm;
+    size: A4 portrait;
   }
 }
 

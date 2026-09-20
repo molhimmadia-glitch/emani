@@ -26,6 +26,7 @@ import {
 import { StorageService } from '../../services/storage';
 import { Language, Sale } from '../../types';
 import { translations, formatBHDLocalized } from '../../services/i18n';
+import { EmaniHeritageInvoice } from '../common/EmaniHeritageInvoice';
 
 interface DashboardViewProps {
   lang: Language;
@@ -37,6 +38,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({ lang, onNavigate }
   const [period, setPeriod] = useState<'today' | 'yesterday' | 'week' | 'month'>('today');
   const [viewInvoiceModal, setViewInvoiceModal] = useState<Sale | null>(null);
 
+  const settings = StorageService.getSettings();
   const sales = StorageService.getSales();
   const products = StorageService.getProducts();
   const expenses = StorageService.getExpenses();
@@ -461,58 +463,17 @@ export const DashboardView: React.FC<DashboardViewProps> = ({ lang, onNavigate }
         </div>
       </div>
 
-      {/* View Invoice Modal */}
+      {/* View Invoice Modal (Official Emani Heritage Design) */}
       {viewInvoiceModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-xs">
-          <div className="w-full max-w-md bg-white rounded-2xl p-5 border border-[#E9DDCA] shadow-2xl space-y-4 text-xs">
-            <div className="flex items-center justify-between border-b border-[#E9DDCA] pb-2">
-              <h3 className="font-bold text-sm text-[#252525]">
-                {lang === 'ar' ? 'تفاصيل الفاتورة الضريبية' : 'Tax Invoice Details'}
-              </h3>
-              <button
-                onClick={() => setViewInvoiceModal(null)}
-                className="p-1 text-neutral-400 hover:text-neutral-600"
-              >
-                <X className="w-5 h-5" />
-              </button>
-            </div>
-
-            <div className="bg-[#FAF7F0] p-4 rounded-xl space-y-2 border border-[#E9DDCA]">
-              <div className="flex justify-between">
-                <span className="text-neutral-500">رقم الفاتورة:</span>
-                <span className="font-bold font-mono">#{viewInvoiceModal.invoiceNumber}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-neutral-500">التاريخ والوقت:</span>
-                <span>{viewInvoiceModal.date} {viewInvoiceModal.time}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-neutral-500">العميل:</span>
-                <span className="font-bold">{viewInvoiceModal.customerName || 'عميل عام'}</span>
-              </div>
-
-              <div className="py-2 border-y border-[#E9DDCA] space-y-1">
-                {viewInvoiceModal.items.map((it, idx) => (
-                  <div key={idx} className="flex justify-between text-neutral-800">
-                    <span>{it.quantity} x {lang === 'ar' ? it.nameAr : it.nameEn}</span>
-                    <span className="font-bold">{(it.price * it.quantity).toFixed(3)} BHD</span>
-                  </div>
-                ))}
-              </div>
-
-              <div className="flex justify-between font-extrabold text-sm text-[#8D641D]">
-                <span>الإجمالي:</span>
-                <span>{formatBHDLocalized(viewInvoiceModal.grandTotal, lang)}</span>
-              </div>
-            </div>
-
-            <button
-              onClick={() => window.print()}
-              className="w-full py-2.5 bg-[#B8862B] text-white rounded-xl font-bold flex items-center justify-center gap-1.5 hover:bg-[#8D641D] transition-colors"
-            >
-              <Printer className="w-4 h-4" />
-              {t.printReceipt}
-            </button>
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-black/60 backdrop-blur-xs overflow-y-auto">
+          <div className="w-full max-w-4xl my-auto py-4">
+            <EmaniHeritageInvoice
+              sale={viewInvoiceModal}
+              settings={settings}
+              customer={customers.find((c) => c.id === viewInvoiceModal.customerId)}
+              lang={lang}
+              onClose={() => setViewInvoiceModal(null)}
+            />
           </div>
         </div>
       )}

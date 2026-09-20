@@ -14,10 +14,12 @@ import {
   History,
   Download,
   Upload,
+  Eye,
 } from 'lucide-react';
 import { StorageService } from '../../services/storage';
 import { Language, CompanySettings } from '../../types';
 import { translations } from '../../services/i18n';
+import { EmaniHeritageInvoice } from '../common/EmaniHeritageInvoice';
 
 interface SettingsViewProps {
   lang: Language;
@@ -28,8 +30,11 @@ export const SettingsView: React.FC<SettingsViewProps> = ({ lang, initialTab = '
   const t = translations[lang];
   const currentSettings = StorageService.getSettings();
   const auditLogs = StorageService.getAuditLogs();
+  const sales = StorageService.getSales();
+  const customers = StorageService.getCustomers();
 
   const [activeTab, setActiveTab] = useState<'profile' | 'pos' | 'whatsapp' | 'audit'>(initialTab);
+  const [showPreviewModal, setShowPreviewModal] = useState(false);
 
   React.useEffect(() => {
     if (initialTab) {
@@ -151,9 +156,21 @@ export const SettingsView: React.FC<SettingsViewProps> = ({ lang, initialTab = '
       {/* TAB 1: Company Profile & VAT Registration */}
       {activeTab === 'profile' && (
         <form onSubmit={handleSave} className="bg-white border border-[#E9DDCA] rounded-2xl p-5 shadow-xs space-y-4 text-xs">
-          <div className="border-b border-[#E9DDCA] pb-4">
-            <h3 className="font-bold text-sm text-[#252525]">{formData.companyNameAr}</h3>
-            <p className="text-neutral-500 font-semibold">{formData.companyNameEn}</p>
+          <div className="border-b border-[#E9DDCA] pb-4 flex items-center gap-4">
+            <img
+              src="/emani-logo.svg"
+              alt="Official Emani Logo"
+              className="w-16 h-16 object-contain rounded-xl p-1.5 bg-[#FAF7F0] border border-[#E9DDCA] shadow-2xs shrink-0"
+              referrerPolicy="no-referrer"
+            />
+            <div>
+              <h3 className="font-bold text-base text-[#252525]">{formData.companyNameAr}</h3>
+              <p className="text-neutral-600 font-semibold">{formData.companyNameEn}</p>
+              <p className="text-[11px] text-emerald-700 font-bold mt-1 flex items-center gap-1">
+                <span>✓</span>
+                <span>{lang === 'ar' ? 'الشعار المعتمد للمتجر والفواتير' : 'Official Store & Invoice Logo Active'}</span>
+              </p>
+            </div>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -308,7 +325,16 @@ export const SettingsView: React.FC<SettingsViewProps> = ({ lang, initialTab = '
             />
           </div>
 
-          <div className="flex justify-end pt-2 border-t border-[#E9DDCA]">
+          <div className="flex flex-wrap items-center justify-between gap-3 pt-3 border-t border-[#E9DDCA]">
+            <button
+              type="button"
+              onClick={() => setShowPreviewModal(true)}
+              className="flex items-center gap-1.5 px-4 py-2.5 bg-[#FAF7F0] border border-[#B8862B]/50 text-[#8D641D] rounded-xl font-bold hover:bg-[#E9DDCA]/50 transition-colors shadow-xs"
+            >
+              <Eye className="w-4 h-4 text-[#B8862B]" />
+              <span>{lang === 'ar' ? 'معاينة تصميم الفاتورة التراثية المعتمد' : 'Preview Official Heritage Invoice'}</span>
+            </button>
+
             <button
               type="submit"
               className="flex items-center gap-1.5 px-5 py-2.5 bg-[#B8862B] text-white rounded-xl font-bold hover:bg-[#8D641D] transition-colors shadow-xs"
@@ -318,6 +344,21 @@ export const SettingsView: React.FC<SettingsViewProps> = ({ lang, initialTab = '
             </button>
           </div>
         </form>
+      )}
+
+      {/* Heritage Invoice Live Preview Modal */}
+      {showPreviewModal && sales.length > 0 && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-black/60 backdrop-blur-xs overflow-y-auto">
+          <div className="w-full max-w-4xl my-auto py-4">
+            <EmaniHeritageInvoice
+              sale={sales.find((s) => s.invoiceNumber === 'INV-2026-000125') || sales[0]}
+              settings={{ ...currentSettings, ...formData }}
+              customer={customers.find((c) => c.id === 'cust-000458') || customers[0]}
+              lang={lang}
+              onClose={() => setShowPreviewModal(false)}
+            />
+          </div>
+        </div>
       )}
 
       {/* TAB 3: WhatsApp Templates */}

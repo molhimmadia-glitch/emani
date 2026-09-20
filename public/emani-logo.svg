@@ -1,0 +1,178 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500" width="100%" height="100%">
+  <defs>
+    <!-- Rich Metallic Gold Gradients -->
+    <linearGradient id="emaniGold" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#CA9E3C" />
+      <stop offset="25%" stop-color="#FDF0A6" />
+      <stop offset="45%" stop-color="#D4A73B" />
+      <stop offset="70%" stop-color="#AA771C" />
+      <stop offset="90%" stop-color="#E5C158" />
+      <stop offset="100%" stop-color="#8B5E28" />
+    </linearGradient>
+
+    <linearGradient id="goldSheen" x1="15%" y1="0%" x2="85%" y2="100%">
+      <stop offset="0%" stop-color="#D9A83E" />
+      <stop offset="30%" stop-color="#FFF5B8" />
+      <stop offset="50%" stop-color="#C5932E" />
+      <stop offset="75%" stop-color="#8F5E1D" />
+      <stop offset="100%" stop-color="#DFB448" />
+    </linearGradient>
+
+    <linearGradient id="goldStroke" x1="0%" y1="50%" x2="100%" y2="50%">
+      <stop offset="0%" stop-color="#AA7A25" />
+      <stop offset="50%" stop-color="#FEDF7E" />
+      <stop offset="100%" stop-color="#8D5C1B" />
+    </linearGradient>
+
+    <!-- Subtle Drop Shadow for Gold Depth -->
+    <filter id="goldDepth" x="-10%" y="-10%" width="125%" height="125%">
+      <feDropShadow dx="0.5" dy="1.5" stdDeviation="1.5" flood-color="#5A3A0E" flood-opacity="0.25" />
+    </filter>
+  </defs>
+
+  <g filter="url(#goldDepth)" fill="url(#emaniGold)" stroke="url(#goldStroke)" stroke-width="0.5" stroke-linejoin="round">
+    <!-- ================= 1. THE MAIN ARABIC CALLIGRAPHY: إيماني ================= -->
+    
+    <!-- Sweeping Crescent Flourish (Tail of the final Yaa enveloping the emblem) -->
+    <path d="M 283 118
+             C 328 152 355 210 340 262
+             C 328 300 292 334 245 338
+             C 200 342 165 315 152 282
+             C 142 258 147 232 164 214
+             C 172 205 182 200 188 206
+             C 193 211 188 222 178 232
+             C 165 247 160 268 172 288
+             C 188 312 225 324 260 318
+             C 300 310 328 274 332 238
+             C 336 195 315 152 283 118 Z" />
+
+    <!-- Central Alif (ا) of إيماني with Hamza and Crown -->
+    <!-- Tall Vertical Alif Stem -->
+    <path d="M 242 125
+             C 243 115 248 108 252 108
+             C 255 108 257 114 256 126
+             L 252 278
+             C 251 285 246 288 243 285
+             C 240 282 240 276 241 270
+             Z" />
+
+    <!-- Alif Decorative Finial (Tashkeel / Crown) -->
+    <path d="M 248 106
+             C 250 100 256 94 258 97
+             C 259 101 254 107 248 106 Z" />
+
+    <!-- Meem (م) Loop and Connection to Alif -->
+    <path d="M 206 200
+             C 214 182 234 180 244 195
+             C 252 206 248 226 235 234
+             C 224 240 210 236 204 224
+             C 198 214 200 206 206 200 Z
+             M 218 202
+             C 212 207 212 216 218 222
+             C 224 226 232 223 235 216
+             C 238 208 232 200 224 198
+             C 221 198 219 200 218 202 Z" />
+
+    <!-- Leading 'Alif' / Hamza Stroke on Right (إ) -->
+    <path d="M 204 140
+             C 207 130 215 125 218 128
+             C 220 132 216 142 212 155
+             C 206 172 205 186 206 198
+             C 202 198 198 195 198 190
+             C 198 178 200 156 204 140 Z" />
+
+    <!-- Hamza / Kasra beneath Alif (إ) -->
+    <path d="M 208 120
+             C 212 114 218 112 222 116
+             C 225 120 220 126 214 128
+             C 209 130 206 125 208 120 Z" />
+
+    <!-- Left Flowing Body of 'Yaa' and 'Noon' (ني) in إيماني -->
+    <path d="M 252 260
+             C 264 252 280 238 290 220
+             C 298 205 304 184 300 168
+             C 298 160 304 156 308 160
+             C 314 172 312 200 298 226
+             C 285 250 266 268 250 275
+             Z" />
+
+    <!-- Diamond Calligraphy Dots for (ي) and (ن) in إيماني -->
+    <!-- Noon Dot (Diamond above) -->
+    <polygon points="268,162 276,152 286,162 278,172" />
+
+    <!-- Yaa Two Dots (Two Diamonds beneath) -->
+    <polygon points="208,258 215,250 224,258 217,266" />
+    <polygon points="228,258 235,250 244,258 237,266" />
+
+    <!-- Calligraphic Tashkeel Accents & Flourishes (Harakat) -->
+    <!-- Fatha Accent Top Right -->
+    <path d="M 178 172 C 185 160 196 150 200 154 C 202 158 192 170 184 178 Z" />
+    <!-- Small Tashkeel Loop Left -->
+    <path d="M 264 135 C 270 128 277 132 274 139 C 270 144 263 142 264 135 Z" />
+    <!-- Decorative Swoop -->
+    <path d="M 174 200 C 170 190 178 184 182 188 C 185 192 180 198 174 200 Z" />
+    <path d="M 242 248 C 245 242 250 244 248 248 C 246 252 241 251 242 248 Z" />
+
+    <!-- ================= 2. MIDDLE ARABIC CALLIGRAPHY: أرت كرافت ================= -->
+    <!-- Lettering for (أرت) -->
+    <g transform="translate(0, 0)">
+      <!-- Alif of أرت -->
+      <path d="M 148 318 C 150 310 154 306 157 308 C 159 311 158 322 156 345 C 154 358 150 365 147 363 C 145 360 146 345 148 318 Z" />
+      <polygon points="152,300 156,295 162,300 158,305" />
+
+      <!-- Raa of أرت -->
+      <path d="M 166 338 C 175 334 186 338 190 348 C 194 358 188 368 176 372 C 166 375 162 368 165 358 C 168 348 165 342 166 338 Z" />
+
+      <!-- Taa of أرت -->
+      <path d="M 194 345 C 205 342 216 345 220 354 C 224 362 218 368 206 370 C 196 371 192 364 194 356 C 195 348 193 346 194 345 Z" />
+      <polygon points="204,334 208,329 213,334 209,339" />
+      <polygon points="214,334 218,329 223,334 219,339" />
+    </g>
+
+    <!-- Lettering for (كرافت) -->
+    <g transform="translate(0, 0)">
+      <!-- Kaf (ك) Upper Arm & Kashida -->
+      <path d="M 235 342
+               C 255 332 285 328 312 334
+               C 322 336 324 342 316 345
+               C 292 352 264 352 238 358
+               C 230 360 228 354 235 342 Z" />
+      
+      <!-- Kaf Base and Raa (كر) -->
+      <path d="M 245 356
+               C 258 358 274 362 284 372
+               C 290 378 285 384 274 384
+               C 258 384 246 374 245 364
+               Z" />
+
+      <!-- Alif & Faa & Taa (افت) in كرافت -->
+      <!-- Alif Stem -->
+      <path d="M 292 324 C 294 316 298 314 300 316 C 302 319 300 332 298 358 C 296 372 292 376 290 374 C 288 372 289 360 292 324 Z" />
+      
+      <!-- Faa Loop and Dot -->
+      <path d="M 306 352 C 314 346 324 348 328 356 C 330 364 324 370 314 370 C 306 370 304 362 306 352 Z" />
+      <polygon points="314,340 319,335 325,340 320,345" />
+
+      <!-- Taa Final Stroke & Dots -->
+      <path d="M 330 354 C 342 352 352 356 354 365 C 356 374 348 378 335 378 C 326 378 325 372 328 365 C 330 358 328 355 330 354 Z" />
+      <polygon points="338,342 342,337 347,342 343,347" />
+      <polygon points="348,342 352,337 357,342 353,347" />
+    </g>
+
+    <!-- Hamza above أرت -->
+    <path d="M 152 288 C 156 282 164 282 166 286 C 168 290 162 295 156 296 C 150 297 148 293 152 288 Z" />
+  </g>
+
+  <!-- ================= 3. ENGLISH TYPOGRAPHY: Emani Art Craft ================= -->
+  <g fill="url(#goldSheen)" text-anchor="middle" font-weight="bold" filter="url(#goldDepth)">
+    <text
+      x="250"
+      y="435"
+      font-size="34"
+      letter-spacing="0.5"
+      style="font-family: 'Great Vibes', 'Playfair Display', 'Brush Script MT', 'Outfit', cursive, serif;"
+    >
+      Emani Art Craft
+    </text>
+  </g>
+</svg>

@@ -26,6 +26,7 @@ import {
 import { Language } from '../../types';
 import { translations } from '../../services/i18n';
 import { StorageService } from '../../services/storage';
+import { EmaniLogo } from './EmaniLogo';
 
 interface SidebarProps {
   lang: Language;
@@ -134,17 +135,17 @@ export const Sidebar: React.FC<SidebarProps> = ({
             : '-translate-x-full lg:translate-x-0'
         }`}
       >
+        {/* Brand Block for Desktop Sidebar */}
+        <div className="hidden lg:flex items-center p-3.5 border-b border-[#E9DDCA] bg-[#FAF7F0]/80">
+          <EmaniLogo size="md" layout="horizontal" />
+        </div>
+
         {/* Mobile Header with Close Button */}
-        <div className="flex items-center justify-between p-4 border-b border-[#E9DDCA] lg:hidden">
-          <div className="flex items-center gap-2">
-            <Store className="w-5 h-5 text-[#B8862B]" />
-            <span className="font-bold text-sm text-[#252525]">
-              {lang === 'ar' ? 'القائمة الرئيسية' : 'Main Menu'}
-            </span>
-          </div>
+        <div className="flex items-center justify-between p-3.5 border-b border-[#E9DDCA] lg:hidden">
+          <EmaniLogo size="sm" layout="horizontal" />
           <button
             onClick={onCloseMobile}
-            className="p-1 rounded-lg text-neutral-500 hover:bg-[#E9DDCA]/50"
+            className="p-1.5 rounded-lg text-neutral-500 hover:bg-[#E9DDCA]/50"
           >
             <X className="w-5 h-5" />
           </button>

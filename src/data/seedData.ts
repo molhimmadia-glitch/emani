@@ -42,7 +42,7 @@ export const initialCompanySettings: CompanySettings = {
   receiptFooterAr: 'شكراً لدعمكم الحرف اليدوية والتراثية البحرينية! الاستبدال خلال 7 أيام مع إحضار أصل الفاتورة.',
   invoiceFooterEn: 'Authorized Retailer & Custom Artisan Workshop - CR: CR-104928-1 - VAT: BH-200034982100002',
   invoiceFooterAr: 'ورشة ومعرض الحرف اليدوية المعتمد - ست: CR-104928-1 - الرقم الضريبي: BH-200034982100002',
-  logoUrl: '',
+  logoUrl: '/emani-logo.svg',
   loyaltyPointsPerBhd: 1, // 1 point per 1 BHD spent
   bhdPerRedeemedPoint: 0.05, // 100 points = 5.000 BHD
   minPointsRedeem: 50,
@@ -288,6 +288,26 @@ export const initialSuppliers: Supplier[] = [
 ];
 
 export const initialCustomers: Customer[] = [
+  {
+    id: 'cust-000458',
+    code: 'C-000458',
+    name: 'Fatima Al Khalifa',
+    nameAr: 'فاطمة الخليفة',
+    phone: '+973 36836849',
+    whatsapp: '+973 36836849',
+    email: 'fatima.alkhalifa@gmail.com',
+    nationality: 'Bahraini',
+    birthday: '1995-04-12',
+    address: 'Manama, Bahrain',
+    tags: ['VIP', 'Regular'],
+    notes: 'Prefers hand-embossed gold gift packaging. Fan of Bahraini heritage items.',
+    totalPurchases: 420.500,
+    numberOfOrders: 5,
+    lastPurchaseDate: '2026-09-15',
+    balance: 0,
+    loyaltyPoints: 420,
+    createdAt: '2025-01-05',
+  },
   {
     id: 'cust-1',
     code: 'CUST-001',
@@ -944,6 +964,72 @@ export const initialProducts: Product[] = [
 ];
 
 export const initialSales: Sale[] = [
+  {
+    id: 'sale-125',
+    invoiceNumber: 'INV-2026-000125',
+    date: '15 Sep 2026',
+    time: '04:30 PM',
+    cashierId: 'usr-4',
+    cashierName: 'Ahmed',
+    customerId: 'cust-000458',
+    customerName: 'Fatima Al Khalifa',
+    customerPhone: '+973 36836849',
+    items: [
+      {
+        cartItemId: 'item-125-1',
+        productId: 'prod-1',
+        nameEn: 'Glass Istikana - Saudi Design',
+        nameAr: 'استكانة زجاج - تصميم سعودي',
+        sku: 'IST-SD-001',
+        price: 1.600,
+        costPrice: 0.700,
+        quantity: 6,
+        vatRate: 0.10,
+        discount: 0,
+        image: 'https://images.unsplash.com/photo-1578749556568-bc2c40e68b61?w=150&auto=format&fit=crop&q=80',
+      },
+      {
+        cartItemId: 'item-125-2',
+        productId: 'prod-2',
+        nameEn: 'Canvas Tote Bag',
+        nameAr: 'حقيبة قماشية',
+        sku: 'BAG-001',
+        price: 3.500,
+        costPrice: 1.400,
+        quantity: 1,
+        vatRate: 0.10,
+        discount: 0,
+        image: 'https://images.unsplash.com/photo-1544816155-12df9643f363?w=150&auto=format&fit=crop&q=80',
+      },
+      {
+        cartItemId: 'item-125-3',
+        productId: 'prod-8',
+        nameEn: 'Gift Box (Medium)',
+        nameAr: 'علبة هدايا (متوسطة)',
+        sku: 'BOX-002',
+        price: 1.200,
+        costPrice: 0.450,
+        quantity: 1,
+        vatRate: 0.10,
+        discount: 0,
+        image: 'https://images.unsplash.com/photo-1549465220-1a8b9238cd48?w=150&auto=format&fit=crop&q=80',
+      },
+    ],
+    subtotal: 14.300,
+    discountTotal: 0.000,
+    vatTotal: 1.430,
+    grandTotal: 15.730,
+    payments: [
+      {
+        method: 'benefit_pay',
+        amount: 15.730,
+        reference: 'BenefitPay',
+      },
+    ],
+    changeGiven: 0,
+    status: 'completed',
+    shiftId: 'shift-1',
+  },
   {
     id: 'sale-1',
     invoiceNumber: 'INV-2026-00101',

@@ -230,6 +230,10 @@ export class StorageService {
       settings.addressEn = initialCompanySettings.addressEn;
       save(STORAGE_KEYS.SETTINGS, settings);
     }
+    if (!settings.logoUrl) {
+      settings.logoUrl = '/emani-logo.svg';
+      save(STORAGE_KEYS.SETTINGS, settings);
+    }
     return settings;
   }
 
@@ -648,7 +652,16 @@ export class StorageService {
 
   // --- Customers & Loyalty ---
   public static getCustomers(): Customer[] {
-    return load<Customer[]>(STORAGE_KEYS.CUSTOMERS, initialCustomers);
+    const list = load<Customer[]>(STORAGE_KEYS.CUSTOMERS, initialCustomers);
+    let changed = false;
+    for (const c of initialCustomers) {
+      if (!list.some((existing) => existing.id === c.id)) {
+        list.unshift(c);
+        changed = true;
+      }
+    }
+    if (changed) save(STORAGE_KEYS.CUSTOMERS, list);
+    return list;
   }
 
   public static saveCustomer(customer: Customer): void {
@@ -662,7 +675,16 @@ export class StorageService {
 
   // --- Sales & POS ---
   public static getSales(): Sale[] {
-    return load<Sale[]>(STORAGE_KEYS.SALES, initialSales);
+    const list = load<Sale[]>(STORAGE_KEYS.SALES, initialSales);
+    let changed = false;
+    for (const s of initialSales) {
+      if (!list.some((existing) => existing.id === s.id || existing.invoiceNumber === s.invoiceNumber)) {
+        list.unshift(s);
+        changed = true;
+      }
+    }
+    if (changed) save(STORAGE_KEYS.SALES, list);
+    return list;
   }
 
   public static getHeldSales(): { id: string; timestamp: string; note: string; cart: CartItem[]; customerId?: string }[] {

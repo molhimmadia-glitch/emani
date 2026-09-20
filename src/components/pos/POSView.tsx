@@ -42,6 +42,7 @@ import {
 } from '../../types';
 import { translations, formatBHDLocalized } from '../../services/i18n';
 import { generateReceiptWhatsAppUrl } from '../../services/whatsapp';
+import { EmaniHeritageInvoice } from '../common/EmaniHeritageInvoice';
 
 interface POSViewProps {
   lang: Language;
@@ -66,6 +67,7 @@ export const POSView: React.FC<POSViewProps> = ({ lang }) => {
   // Modals
   const [showPaymentModal, setShowPaymentModal] = useState(false);
   const [showReceiptModal, setShowReceiptModal] = useState(false);
+  const [receiptFormat, setReceiptFormat] = useState<'heritage' | 'thermal'>('heritage');
   const [showQuickCustomerModal, setShowQuickCustomerModal] = useState(false);
   const [showHeldSalesModal, setShowHeldSalesModal] = useState(false);
   const [showReturnModal, setShowReturnModal] = useState(false);
@@ -954,121 +956,170 @@ export const POSView: React.FC<POSViewProps> = ({ lang }) => {
         </div>
       )}
 
-      {/* --- MODAL 3: Printable Thermal Receipt & WhatsApp Share --- */}
+      {/* --- MODAL 3: Printable Emani Heritage Invoice & WhatsApp Share --- */}
       {showReceiptModal && completedSale && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs">
-          <div className="w-full max-w-sm bg-white rounded-2xl p-5 border border-[#E9DDCA] shadow-2xl flex flex-col space-y-4">
-            <div className="flex items-center justify-between no-print">
-              <span className="font-bold text-xs text-emerald-700 flex items-center gap-1">
-                <CheckCircle2 className="w-4 h-4" />
-                {t.successMsg}
-              </span>
-              <button
-                onClick={() => setShowReceiptModal(false)}
-                className="p-1 rounded-lg text-neutral-400 hover:text-neutral-600"
-              >
-                <X className="w-5 h-5" />
-              </button>
-            </div>
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 md:p-6 bg-black/60 backdrop-blur-xs overflow-y-auto">
+          <div
+            className={`w-full ${
+              receiptFormat === 'heritage' ? 'max-w-4xl' : 'max-w-sm'
+            } my-auto transition-all duration-200`}
+          >
+            {/* View Choice 1: Official Emani Heritage Invoice */}
+            {receiptFormat === 'heritage' ? (
+              <EmaniHeritageInvoice
+                sale={completedSale}
+                settings={settings}
+                customer={customers.find((c) => c.id === completedSale.customerId)}
+                lang={lang}
+                onClose={() => setShowReceiptModal(false)}
+                showActions={true}
+                formatToggle={
+                  <div className="inline-flex rounded-xl bg-[#FAF7F0] p-0.5 border border-[#E9DDCA]">
+                    <button
+                      onClick={() => setReceiptFormat('heritage')}
+                      className="px-2.5 py-1 text-[11px] font-bold rounded-lg bg-[#8B5E28] text-white shadow-xs cursor-pointer"
+                    >
+                      {lang === 'ar' ? 'فاتورة A4' : 'A4 Invoice'}
+                    </button>
+                    <button
+                      onClick={() => setReceiptFormat('thermal')}
+                      className="px-2.5 py-1 text-[11px] font-medium rounded-lg text-neutral-600 hover:text-neutral-900 cursor-pointer"
+                    >
+                      {lang === 'ar' ? 'حراري 80mm' : 'Thermal'}
+                    </button>
+                  </div>
+                }
+              />
+            ) : (
+              /* View Choice 2: Compact 80mm Thermal Receipt */
+              <div className="bg-white rounded-2xl p-5 border border-[#E9DDCA] shadow-2xl flex flex-col space-y-4">
+                {/* Clean Top Bar for Thermal Receipt */}
+                <div className="flex items-center justify-between pb-2 border-b border-[#E9DDCA]">
+                  <div className="inline-flex rounded-xl bg-[#FAF7F0] p-0.5 border border-[#E9DDCA]">
+                    <button
+                      onClick={() => setReceiptFormat('heritage')}
+                      className="px-2.5 py-1 text-[11px] font-medium rounded-lg text-neutral-600 hover:text-neutral-900 cursor-pointer"
+                    >
+                      {lang === 'ar' ? 'فاتورة A4' : 'A4 Invoice'}
+                    </button>
+                    <button
+                      onClick={() => setReceiptFormat('thermal')}
+                      className="px-2.5 py-1 text-[11px] font-bold rounded-lg bg-[#8B5E28] text-white shadow-xs cursor-pointer"
+                    >
+                      {lang === 'ar' ? 'حراري 80mm' : 'Thermal'}
+                    </button>
+                  </div>
 
-            {/* Printable Thermal Receipt (80mm width standard) */}
-            <div
-              id="printable-receipt"
-              className="bg-[#FAF7F0]/40 p-4 rounded-xl border border-dashed border-[#E9DDCA] font-mono text-[11px] text-neutral-800 space-y-3 leading-relaxed"
-            >
-              {/* Receipt Header */}
-              <div className="text-center space-y-1 pb-2 border-b border-dashed border-neutral-300">
-                <p className="font-bold text-xs uppercase tracking-wider">{settings.companyNameAr}</p>
-                <p className="text-[10px] text-neutral-600">{settings.companyNameEn}</p>
-                <p className="text-[9px] text-neutral-500">{settings.addressAr}</p>
-                <p className="text-[9px] text-neutral-500">
-                  ست: {settings.crNumber} • الرقم الضريبي: {settings.vatNumber}
-                </p>
-                <p className="text-[9px] font-bold text-[#8D641D]">فاتورة ضريبية مبسطة / Tax Invoice</p>
-              </div>
-
-              {/* Invoice Meta */}
-              <div className="flex justify-between text-[10px] pb-1 border-b border-dashed border-neutral-200">
-                <div>
-                  <p>رقم الفاتورة: #{completedSale.invoiceNumber}</p>
-                  <p>التاريخ: {completedSale.date} {completedSale.time}</p>
+                  <button
+                    onClick={() => setShowReceiptModal(false)}
+                    className="p-1.5 rounded-xl text-neutral-400 hover:text-neutral-700 hover:bg-neutral-100 transition-colors cursor-pointer"
+                  >
+                    <X className="w-5 h-5" />
+                  </button>
                 </div>
-                <div className="text-end">
-                  <p>الكاشير: {completedSale.cashierName.split(' ')[0]}</p>
-                  <p>العميل: {completedSale.customerName || 'عميل عام'}</p>
-                </div>
-              </div>
+                <div
+                  id="printable-receipt"
+                  className="bg-[#FAF7F0]/40 p-4 rounded-xl border border-dashed border-[#E9DDCA] font-mono text-[11px] text-neutral-800 space-y-3 leading-relaxed"
+                >
+                  {/* Receipt Header */}
+                  <div className="text-center space-y-1 pb-2 border-b border-dashed border-neutral-300 flex flex-col items-center">
+                    <img
+                      src="/emani-logo.svg"
+                      alt="Emani Art Craft"
+                      className="w-12 h-12 object-contain mb-1"
+                      referrerPolicy="no-referrer"
+                    />
+                    <p className="font-bold text-xs uppercase tracking-wider">{settings.companyNameAr}</p>
+                    <p className="text-[10px] text-neutral-600 font-serif">{settings.companyNameEn}</p>
+                    <p className="text-[9px] text-neutral-500">{settings.addressAr}</p>
+                    <p className="text-[9px] text-neutral-500">
+                      ست: {settings.crNumber} • الرقم الضريبي: {settings.vatNumber}
+                    </p>
+                    <p className="text-[9px] font-bold text-[#8D641D]">فاتورة ضريبية مبسطة / Tax Invoice</p>
+                  </div>
 
-              {/* Items Table */}
-              <div className="space-y-1.5 py-1">
-                {completedSale.items.map((it, idx) => (
-                  <div key={idx} className="flex justify-between items-start">
-                    <div className="max-w-[180px]">
-                      <p className="font-bold">{lang === 'ar' ? it.nameAr : it.nameEn}</p>
-                      <p className="text-[9px] text-neutral-500">
-                        {it.quantity} x {it.price.toFixed(3)} BHD
-                      </p>
+                  {/* Invoice Meta */}
+                  <div className="flex justify-between text-[10px] pb-1 border-b border-dashed border-neutral-200">
+                    <div>
+                      <p>رقم الفاتورة: #{completedSale.invoiceNumber}</p>
+                      <p>التاريخ: {completedSale.date} {completedSale.time}</p>
                     </div>
-                    <span className="font-bold">
-                      {(it.price * it.quantity).toFixed(3)} BHD
-                    </span>
+                    <div className="text-end">
+                      <p>الكاشير: {completedSale.cashierName.split(' ')[0]}</p>
+                      <p>العميل: {completedSale.customerName || 'عميل عام'}</p>
+                    </div>
                   </div>
-                ))}
-              </div>
 
-              {/* Financial Breakdown */}
-              <div className="pt-2 border-t border-dashed border-neutral-300 space-y-1">
-                <div className="flex justify-between">
-                  <span>المجموع الفرعي (غير شامل):</span>
-                  <span>{completedSale.subtotal.toFixed(3)} BHD</span>
-                </div>
-                <div className="flex justify-between">
-                  <span>ضريبة القيمة المضافة (10%):</span>
-                  <span>{completedSale.vatTotal.toFixed(3)} BHD</span>
-                </div>
-                <div className="flex justify-between font-extrabold text-xs pt-1 border-t border-neutral-300">
-                  <span>الإجمالي شامل الضريبة:</span>
-                  <span>{completedSale.grandTotal.toFixed(3)} BHD</span>
-                </div>
-                <div className="flex justify-between text-[10px] text-neutral-600">
-                  <span>طريقة الدفع:</span>
-                  <span>{completedSale.payments.map((p) => p.method).join(', ')}</span>
-                </div>
-                {completedSale.changeGiven > 0 && (
-                  <div className="flex justify-between text-[10px] text-neutral-600">
-                    <span>المبلغ المتبقي للعميل:</span>
-                    <span>{completedSale.changeGiven.toFixed(3)} BHD</span>
+                  {/* Items Table */}
+                  <div className="space-y-1.5 py-1">
+                    {completedSale.items.map((it, idx) => (
+                      <div key={idx} className="flex justify-between items-start">
+                        <div className="max-w-[180px]">
+                          <p className="font-bold">{lang === 'ar' ? it.nameAr : it.nameEn}</p>
+                          <p className="text-[9px] text-neutral-500">
+                            {it.quantity} x {it.price.toFixed(3)} BHD
+                          </p>
+                        </div>
+                        <span className="font-bold">
+                          {(it.price * it.quantity).toFixed(3)} BHD
+                        </span>
+                      </div>
+                    ))}
                   </div>
-                )}
+
+                  {/* Financial Breakdown */}
+                  <div className="pt-2 border-t border-dashed border-neutral-300 space-y-1">
+                    <div className="flex justify-between">
+                      <span>المجموع الفرعي (غير شامل):</span>
+                      <span>{completedSale.subtotal.toFixed(3)} BHD</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>ضريبة القيمة المضافة (10%):</span>
+                      <span>{completedSale.vatTotal.toFixed(3)} BHD</span>
+                    </div>
+                    <div className="flex justify-between font-extrabold text-xs pt-1 border-t border-neutral-300">
+                      <span>الإجمالي شامل الضريبة:</span>
+                      <span>{completedSale.grandTotal.toFixed(3)} BHD</span>
+                    </div>
+                    <div className="flex justify-between text-[10px] text-neutral-600">
+                      <span>طريقة الدفع:</span>
+                      <span>{completedSale.payments.map((p) => p.method).join(', ')}</span>
+                    </div>
+                    {completedSale.changeGiven > 0 && (
+                      <div className="flex justify-between text-[10px] text-neutral-600">
+                        <span>المبلغ المتبقي للعميل:</span>
+                        <span>{completedSale.changeGiven.toFixed(3)} BHD</span>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Receipt Footer */}
+                  <div className="text-center text-[9px] text-neutral-500 pt-2 border-t border-dashed border-neutral-300">
+                    <p>{settings.receiptFooterAr}</p>
+                    <p className="mt-1">إنستغرام: {settings.instagram} • هاتف: {settings.phone}</p>
+                  </div>
+                </div>
+
+                <div className="flex gap-2 no-print">
+                  <button
+                    onClick={() => window.print()}
+                    className="flex-1 py-2.5 bg-neutral-800 text-white rounded-xl font-bold text-xs flex items-center justify-center gap-1.5 hover:bg-black transition-colors shadow-xs"
+                  >
+                    <Printer className="w-4 h-4" />
+                    {t.printReceipt}
+                  </button>
+                  <a
+                    href={generateReceiptWhatsAppUrl(completedSale, settings, lang)}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="flex-1 py-2.5 bg-emerald-600 text-white rounded-xl font-bold text-xs flex items-center justify-center gap-1.5 hover:bg-emerald-700 transition-colors text-center shadow-xs"
+                  >
+                    <Share2 className="w-4 h-4" />
+                    {t.digitalReceipt}
+                  </a>
+                </div>
               </div>
-
-              {/* Receipt Footer */}
-              <div className="text-center text-[9px] text-neutral-500 pt-2 border-t border-dashed border-neutral-300">
-                <p>{settings.receiptFooterAr}</p>
-                <p className="mt-1">إنستغرام: {settings.instagram} • هاتف: {settings.phone}</p>
-              </div>
-            </div>
-
-            {/* Action Buttons: Print & WhatsApp */}
-            <div className="flex gap-2 no-print">
-              <button
-                onClick={() => window.print()}
-                className="flex-1 py-2.5 bg-neutral-800 text-white rounded-xl font-bold text-xs flex items-center justify-center gap-1.5 hover:bg-black transition-colors"
-              >
-                <Printer className="w-4 h-4" />
-                {t.printReceipt}
-              </button>
-
-              <a
-                href={generateReceiptWhatsAppUrl(completedSale, settings, lang)}
-                target="_blank"
-                rel="noreferrer"
-                className="flex-1 py-2.5 bg-emerald-600 text-white rounded-xl font-bold text-xs flex items-center justify-center gap-1.5 hover:bg-emerald-700 transition-colors text-center"
-              >
-                <Share2 className="w-4 h-4" />
-                {t.digitalReceipt}
-              </a>
-            </div>
+            )}
           </div>
         </div>
       )}

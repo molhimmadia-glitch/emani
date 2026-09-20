@@ -210,6 +210,7 @@ export interface Customer {
   id: string;
   code: string;
   name: string;
+  nameAr?: string;
   phone: string;
   whatsapp: string;
   email?: string;
