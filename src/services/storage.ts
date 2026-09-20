@@ -8,6 +8,7 @@ import {
   Customer,
   Supplier,
   User,
+  UserRole,
   CompanySettings,
   Sale,
   CartItem,
@@ -49,6 +50,7 @@ const STORAGE_KEYS = {
   SETTINGS: 'emani_settings_v1',
   USERS: 'emani_users_v1',
   CURRENT_USER: 'emani_current_user_v1',
+  IS_LOGGED_IN: 'emani_is_logged_in_v1',
   CATEGORIES: 'emani_categories_v1',
   COLLECTIONS: 'emani_collections_v1',
   WAREHOUSES: 'emani_warehouses_v1',
@@ -86,6 +88,100 @@ function save<T>(key: string, data: T): void {
     console.error(`Failed to save ${key}`, e);
   }
 }
+
+export const ALL_SYSTEM_PAGES = [
+  // العمليات ونقطة البيع
+  { id: 'dashboard', nameAr: 'لوحة المعلومات والإحصائيات', nameEn: 'Executive Dashboard', sectionAr: 'العمليات ونقطة البيع', sectionEn: 'Operations & Sales' },
+  { id: 'pos', nameAr: 'نقطة البيع والكاشير', nameEn: 'POS & Cashier', sectionAr: 'العمليات ونقطة البيع', sectionEn: 'Operations & Sales' },
+  { id: 'products', nameAr: 'كتالوج المنتجات والقطع', nameEn: 'Art & Products', sectionAr: 'العمليات ونقطة البيع', sectionEn: 'Operations & Sales' },
+  { id: 'categories', nameAr: 'الأقسام والتصنيفات', nameEn: 'Categories', sectionAr: 'العمليات ونقطة البيع', sectionEn: 'Operations & Sales' },
+  { id: 'collections', nameAr: 'المجموعات التراثية', nameEn: 'Heritage Collections', sectionAr: 'العمليات ونقطة البيع', sectionEn: 'Operations & Sales' },
+  { id: 'inventory', nameAr: 'المستودع والمخزون', nameEn: 'Warehouse & Stock', sectionAr: 'العمليات ونقطة البيع', sectionEn: 'Operations & Sales' },
+
+  // الطلبات الخاصة والعملاء
+  { id: 'custom-orders', nameAr: 'الطلبات الخاصة وتفصيل النحاس', nameEn: 'Custom Orders & Artisan Workshop', sectionAr: 'الطلبات الخاصة والعملاء', sectionEn: 'Custom Orders & CRM' },
+  { id: 'quotations', nameAr: 'عروض الأسعار الرسمية', nameEn: 'Official Quotations', sectionAr: 'الطلبات الخاصة والعملاء', sectionEn: 'Custom Orders & CRM' },
+  { id: 'crm', nameAr: 'إدارة العملاء ونادي النخبة', nameEn: 'CRM & Customers', sectionAr: 'الطلبات الخاصة والعملاء', sectionEn: 'Custom Orders & CRM' },
+
+  // المشتريات والمالية
+  { id: 'purchases', nameAr: 'المشتريات وفواتير الموردين', nameEn: 'Purchases & Suppliers', sectionAr: 'المشتريات والمالية', sectionEn: 'Purchasing & Financials' },
+  { id: 'expenses', nameAr: 'سندات الصرف والمصروفات', nameEn: 'Expense Vouchers', sectionAr: 'المشتريات والمالية', sectionEn: 'Purchasing & Financials' },
+  { id: 'accounting', nameAr: 'المحاسبة والمالية والضريبة', nameEn: 'Accounting & Ledger', sectionAr: 'المشتريات والمالية', sectionEn: 'Purchasing & Financials' },
+  { id: 'shifts', nameAr: 'الورديات وصندوق الكاشير', nameEn: 'Register Shifts & Cash Drawer', sectionAr: 'المشتريات والمالية', sectionEn: 'Purchasing & Financials' },
+  { id: 'promotions', nameAr: 'العروض الترويجية والخصومات', nameEn: 'Promotions & Discounts', sectionAr: 'المشتريات والمالية', sectionEn: 'Purchasing & Financials' },
+
+  // الإدارة والتقارير
+  { id: 'reports', nameAr: 'التقارير التحليلية والمالية', nameEn: 'Analytics & Reports', sectionAr: 'الإدارة والتقارير', sectionEn: 'Administration & Reports' },
+  { id: 'users', nameAr: 'إدارة المستخدمين والصلاحيات', nameEn: 'Staff & Permissions Management', sectionAr: 'الإدارة والتقارير', sectionEn: 'Administration & Reports' },
+  { id: 'audit', nameAr: 'سجل العمليات والرقابة', nameEn: 'Audit Trail', sectionAr: 'الإدارة والتقارير', sectionEn: 'Administration & Reports' },
+  { id: 'settings', nameAr: 'إعدادات المعرض والنظام', nameEn: 'System Settings', sectionAr: 'الإدارة والتقارير', sectionEn: 'Administration & Reports' },
+];
+
+export const DEFAULT_ROLE_PAGES: Record<UserRole, string[]> = {
+  super_admin: [
+    'dashboard',
+    'pos',
+    'products',
+    'categories',
+    'collections',
+    'inventory',
+    'custom-orders',
+    'quotations',
+    'crm',
+    'purchases',
+    'expenses',
+    'accounting',
+    'shifts',
+    'promotions',
+    'reports',
+    'users',
+    'audit',
+    'settings',
+  ],
+  owner: [
+    'dashboard',
+    'pos',
+    'products',
+    'categories',
+    'collections',
+    'inventory',
+    'custom-orders',
+    'quotations',
+    'crm',
+    'purchases',
+    'expenses',
+    'accounting',
+    'shifts',
+    'promotions',
+    'reports',
+    'users',
+    'audit',
+    'settings',
+  ],
+  manager: [
+    'dashboard',
+    'pos',
+    'products',
+    'categories',
+    'collections',
+    'inventory',
+    'custom-orders',
+    'quotations',
+    'crm',
+    'purchases',
+    'expenses',
+    'shifts',
+    'promotions',
+    'reports',
+    'users',
+  ],
+  cashier: ['pos', 'custom-orders', 'quotations', 'crm', 'shifts'],
+  accountant: ['dashboard', 'accounting', 'expenses', 'purchases', 'shifts', 'reports'],
+  designer: ['custom-orders', 'collections', 'products', 'inventory'],
+  production_employee: ['custom-orders', 'collections', 'products', 'inventory'],
+  sales_employee: ['pos', 'products', 'collections', 'custom-orders', 'quotations', 'crm'],
+  inventory_employee: ['inventory', 'products', 'categories', 'purchases', 'collections'],
+};
 
 export class StorageService {
   // Listeners for reactive updates
@@ -143,7 +239,24 @@ export class StorageService {
     this.notify();
   }
 
-  // --- Current User & Users ---
+  // --- Auth Session & Users ---
+  public static isLoggedIn(): boolean {
+    return load<boolean>(STORAGE_KEYS.IS_LOGGED_IN, false);
+  }
+
+  public static login(user: User): void {
+    save(STORAGE_KEYS.IS_LOGGED_IN, true);
+    save(STORAGE_KEYS.CURRENT_USER, user);
+    this.logAudit('USER_LOGIN', 'users', `User ${user.nameEn} (${user.role}) logged in`);
+    this.notify();
+  }
+
+  public static logout(): void {
+    save(STORAGE_KEYS.IS_LOGGED_IN, false);
+    this.logAudit('USER_LOGOUT', 'users', 'Active user session logged out');
+    this.notify();
+  }
+
   public static getCurrentUser(): User {
     return load<User>(STORAGE_KEYS.CURRENT_USER, initialUsers[0]);
   }
@@ -155,7 +268,115 @@ export class StorageService {
   }
 
   public static getUsers(): User[] {
-    return load<User[]>(STORAGE_KEYS.USERS, initialUsers);
+    const users = load<User[]>(STORAGE_KEYS.USERS, initialUsers);
+    // Ensure all existing users have can_login and allowedPages properly populated
+    let modified = false;
+    users.forEach((u) => {
+      if (!u.customPermissions) {
+        u.customPermissions = u.active !== false ? ['can_login', 'can_access_pos'] : ['can_access_pos'];
+        modified = true;
+      } else if (u.active !== false && !u.customPermissions.includes('can_login') && (u.role === 'super_admin' || u.role === 'owner' || u.role === 'manager')) {
+        u.customPermissions.push('can_login');
+        modified = true;
+      }
+
+      // Populate allowedPages if missing or empty
+      if (!u.allowedPages || u.allowedPages.length === 0) {
+        u.allowedPages = DEFAULT_ROLE_PAGES[u.role] || ['pos'];
+        modified = true;
+      }
+    });
+    if (modified) {
+      save(STORAGE_KEYS.USERS, users);
+    }
+    return users;
+  }
+
+  public static getAllowedPages(user?: User | null): string[] {
+    if (!user) return ['pos'];
+    if (user.role === 'super_admin' || user.role === 'owner') {
+      return DEFAULT_ROLE_PAGES.super_admin;
+    }
+    if (Array.isArray(user.allowedPages) && user.allowedPages.length > 0) {
+      return user.allowedPages;
+    }
+    return DEFAULT_ROLE_PAGES[user.role] || ['pos'];
+  }
+
+  public static isPageAllowed(user: User | null | undefined, pageId: string): boolean {
+    if (!user) return false;
+    // Normalize aliases
+    let normalized = pageId;
+    if (pageId === 'purchasing') normalized = 'purchases';
+    if (pageId === 'custom_orders') normalized = 'custom-orders';
+
+    const allowed = this.getAllowedPages(user);
+    return allowed.includes(normalized);
+  }
+
+  public static getDefaultRouteForUser(user: User | null | undefined): string {
+    if (!user) return 'pos';
+    const pages = this.getAllowedPages(user);
+    if (pages.length === 0) return 'pos';
+
+    if (user.role === 'cashier' || user.role === 'sales_employee') {
+      return pages.includes('pos') ? 'pos' : pages[0];
+    }
+    if (user.role === 'accountant') {
+      return pages.includes('accounting') ? 'accounting' : pages[0];
+    }
+    if (user.role === 'designer' || user.role === 'production_employee') {
+      return pages.includes('custom-orders') ? 'custom-orders' : pages[0];
+    }
+    if (user.role === 'inventory_employee') {
+      return pages.includes('inventory') ? 'inventory' : pages[0];
+    }
+    // For manager or admin: prefer dashboard if available, else first page
+    return pages.includes('dashboard') ? 'dashboard' : pages[0];
+  }
+
+  public static canUserLogin(user: User): boolean {
+    if (!user) return false;
+    if (user.active === false) return false;
+    if (user.role === 'super_admin' || user.role === 'owner') return true;
+    if (Array.isArray(user.customPermissions)) {
+      return user.customPermissions.includes('can_login');
+    }
+    return true;
+  }
+
+  public static toggleUserLoginPermission(userId: string): { success: boolean; user?: User; error?: string } {
+    const users = this.getUsers();
+    const user = users.find((u) => u.id === userId);
+    if (!user) return { success: false, error: 'User not found' };
+
+    const currentUser = this.getCurrentUser();
+    if (user.id === currentUser.id && user.active && this.canUserLogin(user)) {
+      return {
+        success: false,
+        error: 'لا يمكن تعطيل صلاحية الدخول للحساب النشط حالياً الذي تستخدمه',
+      };
+    }
+
+    const currentCanLogin = this.canUserLogin(user);
+    const newCanLogin = !currentCanLogin;
+    user.active = newCanLogin;
+
+    const perms = new Set(user.customPermissions || ['can_access_pos']);
+    if (newCanLogin) {
+      perms.add('can_login');
+    } else {
+      perms.delete('can_login');
+    }
+    user.customPermissions = Array.from(perms);
+
+    this.saveUser(user);
+    this.logAudit(
+      'USER_PERMISSION_CHANGED',
+      'users',
+      `Login permission for ${user.nameEn} (${user.username}) set to ${newCanLogin ? 'ENABLED' : 'DISABLED'}`
+    );
+    return { success: true, user };
   }
 
   public static saveUser(user: User): void {
@@ -241,7 +462,19 @@ export class StorageService {
 
   // --- Products & Variants ---
   public static getProducts(): Product[] {
-    return load<Product[]>(STORAGE_KEYS.PRODUCTS, initialProducts);
+    const prods = load<Product[]>(STORAGE_KEYS.PRODUCTS, initialProducts);
+    let changed = false;
+    for (const initP of initialProducts) {
+      const exists = prods.some((p) => p.id === initP.id);
+      if (!exists) {
+        prods.push(initP);
+        changed = true;
+      }
+    }
+    if (changed) {
+      save(STORAGE_KEYS.PRODUCTS, prods);
+    }
+    return prods;
   }
 
   public static saveProduct(prod: Product): void {

@@ -17,8 +17,12 @@ export type NavRoute =
   | 'expenses'
   | 'accounting'
   | 'shifts'
+  | 'reports'
+  | 'audit'
+  | 'promotions'
   | 'users'
-  | 'settings';
+  | 'settings'
+  | 'login';
 
 export type UserRole =
   | 'super_admin'
@@ -50,6 +54,7 @@ export interface User {
   active: boolean;
   avatar?: string;
   customPermissions?: string[]; // overrides or additions
+  allowedPages?: string[]; // authorized page routes for this user
 }
 
 export interface Category {

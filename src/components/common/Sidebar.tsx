@@ -57,9 +57,10 @@ export const Sidebar: React.FC<SidebarProps> = ({
 }) => {
   const t = translations[lang];
   const currentUser = StorageService.getCurrentUser();
+  const allowedPages = StorageService.getAllowedPages(currentUser);
 
   // Navigation Items organized logically
-  const navSections: NavSection[] = [
+  const allNavSections: NavSection[] = [
     {
       title: lang === 'ar' ? 'العمليات ونقطة البيع' : 'Operations & Sales',
       items: [
@@ -99,6 +100,14 @@ export const Sidebar: React.FC<SidebarProps> = ({
       ],
     },
   ];
+
+  // Filter sections and items to ONLY display authorized pages for the active user
+  const navSections: NavSection[] = allNavSections
+    .map((section) => ({
+      ...section,
+      items: section.items.filter((item) => StorageService.isPageAllowed(currentUser, item.id)),
+    }))
+    .filter((section) => section.items.length > 0);
 
   const handleItemClick = (id: string) => {
     setActiveTab(id);
@@ -198,7 +207,15 @@ export const Sidebar: React.FC<SidebarProps> = ({
         </div>
 
         {/* Sidebar Footer: Store & Role Status */}
-        <div className="p-3 border-t border-[#E9DDCA] bg-[#FAF7F0]/60">
+        <div className="p-3 border-t border-[#E9DDCA] bg-[#FAF7F0]/60 space-y-2">
+          <div className="flex items-center justify-between px-1 text-[11px] text-neutral-600">
+            <span className="font-bold text-[#252525] truncate max-w-[130px]">
+              {lang === 'ar' ? currentUser.nameAr : currentUser.nameEn}
+            </span>
+            <span className="px-2 py-0.5 rounded-full bg-[#B8862B]/15 text-[#8D641D] font-bold text-[10px] shrink-0">
+              {allowedPages.length} {lang === 'ar' ? 'صفحات مصرح بها' : 'allowed'}
+            </span>
+          </div>
           <div className="flex items-center gap-2.5 p-2 rounded-xl bg-white/70 border border-[#E9DDCA]/80">
             <div className="w-8 h-8 rounded-lg bg-[#B8862B]/10 text-[#B8862B] flex items-center justify-center font-bold text-xs shrink-0">
               🇧🇭

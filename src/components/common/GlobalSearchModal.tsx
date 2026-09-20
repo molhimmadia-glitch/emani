@@ -45,13 +45,17 @@ export const GlobalSearchModal: React.FC<GlobalSearchModalProps> = ({
   if (!isOpen) return null;
 
   const q = query.trim().toLowerCase();
+  const currentUser = StorageService.getCurrentUser();
 
-  const products = StorageService.getProducts();
-  const customers = StorageService.getCustomers();
-  const sales = StorageService.getSales();
-  const customOrders = StorageService.getCustomOrders();
-  const quotations = StorageService.getQuotations();
-  const suppliers = StorageService.getSuppliers();
+  const canAccessProducts = StorageService.isPageAllowed(currentUser, 'products');
+  const canAccessCustomers = StorageService.isPageAllowed(currentUser, 'crm');
+  const canAccessSales = StorageService.isPageAllowed(currentUser, 'pos') || StorageService.isPageAllowed(currentUser, 'accounting');
+  const canAccessCustomOrders = StorageService.isPageAllowed(currentUser, 'custom-orders');
+
+  const products = canAccessProducts ? StorageService.getProducts() : [];
+  const customers = canAccessCustomers ? StorageService.getCustomers() : [];
+  const sales = canAccessSales ? StorageService.getSales() : [];
+  const customOrders = canAccessCustomOrders ? StorageService.getCustomOrders() : [];
 
   const matchedProducts = q
     ? products

@@ -23,9 +23,10 @@ import { translations, formatBHDLocalized } from '../../services/i18n';
 
 interface AccountingViewProps {
   lang: Language;
+  initialTab?: 'vat' | 'pl' | 'expenses' | 'shifts';
 }
 
-export const AccountingView: React.FC<AccountingViewProps> = ({ lang }) => {
+export const AccountingView: React.FC<AccountingViewProps> = ({ lang, initialTab = 'vat' }) => {
   const t = translations[lang];
   const settings = StorageService.getSettings();
   const sales = StorageService.getSales();
@@ -33,7 +34,13 @@ export const AccountingView: React.FC<AccountingViewProps> = ({ lang }) => {
   const shifts = StorageService.getShifts();
   const activeShift = StorageService.getActiveShift();
 
-  const [activeTab, setActiveTab] = useState<'vat' | 'pl' | 'expenses' | 'shifts'>('vat');
+  const [activeTab, setActiveTab] = useState<'vat' | 'pl' | 'expenses' | 'shifts'>(initialTab);
+
+  React.useEffect(() => {
+    if (initialTab) {
+      setActiveTab(initialTab);
+    }
+  }, [initialTab]);
 
   // New Expense Modal
   const [showExpenseModal, setShowExpenseModal] = useState(false);

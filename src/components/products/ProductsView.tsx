@@ -373,13 +373,14 @@ export const ProductsView: React.FC<ProductsViewProps> = ({ lang }) => {
       {/* Header & New Product Button */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div>
-          <h1 className="text-xl sm:text-2xl font-black text-[#252525]">
+          <h1 className="text-xl sm:text-2xl font-black text-[#252525] flex items-center gap-2">
+            <Package className="w-6 h-6 text-[#B8862B]" />
             {t.navProducts}
           </h1>
           <p className="text-xs sm:text-sm text-neutral-500">
             {lang === 'ar'
-              ? 'إدارة الحرف اليدوية، الهدايا، الأسعار، المخزون، والخيارات المتعددة'
-              : 'Manage handcrafted arts, gifts, pricing, inventory, and multi-variants'}
+              ? 'كتالوج الحرف اليدوية البحرينية، التحف، أطقم الضيافة المذهبة، وإدارة الباركود والأسعار'
+              : 'Authentic Bahraini heritage crafts, luxury hospitality sets, barcode generation, and inventory'}
           </p>
         </div>
 

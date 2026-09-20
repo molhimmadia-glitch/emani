@@ -15,6 +15,11 @@ import {
   Shield,
   Layers,
   MapPin,
+  Mail,
+  Phone,
+  ShieldCheck,
+  CheckCircle2,
+  Lock,
 } from 'lucide-react';
 import { EmaniLogo } from './EmaniLogo';
 import { StorageService } from '../../services/storage';
@@ -31,6 +36,7 @@ interface HeaderProps {
   onOpenShiftModal: () => void;
   activeTab: string;
   setActiveTab: (tab: string) => void;
+  onLogout?: () => void;
 }
 
 export const Header: React.FC<HeaderProps> = ({
@@ -41,11 +47,11 @@ export const Header: React.FC<HeaderProps> = ({
   onOpenShiftModal,
   activeTab,
   setActiveTab,
+  onLogout,
 }) => {
   const t = translations[lang];
   const { currentUser: authUser, signInWithGoogle, signOut: authSignOut } = useAuth();
   const currentUser = StorageService.getCurrentUser();
-  const allUsers = StorageService.getUsers();
   const activeShift = StorageService.getActiveShift();
   const products = StorageService.getProducts();
   const customOrders = StorageService.getCustomOrders();
@@ -59,11 +65,6 @@ export const Header: React.FC<HeaderProps> = ({
     (o) => o.status === 'in_production' || o.status === 'customer_approval'
   );
   const totalAlerts = lowStockItems.length + approachingOrders.length;
-
-  const handleSwitchUser = (user: UserType) => {
-    StorageService.setCurrentUser(user);
-    setShowUserDropdown(false);
-  };
 
   return (
     <header className="sticky top-0 z-30 bg-[#FAF7F0]/95 backdrop-blur-md border-b border-[#E9DDCA] px-4 lg:px-6 py-2.5 transition-all">
@@ -81,7 +82,7 @@ export const Header: React.FC<HeaderProps> = ({
 
           <div
             className="cursor-pointer"
-            onClick={() => setActiveTab('dashboard')}
+            onClick={() => setActiveTab(StorageService.getDefaultRouteForUser(currentUser))}
             title="Emani Art Craft ERP"
           >
             <EmaniLogo size="md" showText={true} />
@@ -280,114 +281,137 @@ export const Header: React.FC<HeaderProps> = ({
               <div
                 className={`absolute ${
                   lang === 'ar' ? 'left-0' : 'right-0'
-                } mt-2 w-64 bg-white border border-[#E9DDCA] rounded-2xl shadow-xl p-2 z-50`}
+                } mt-2 w-72 sm:w-80 bg-white border border-[#E9DDCA] rounded-2xl shadow-xl p-3 z-50`}
               >
-                <div className="px-3 py-2 border-b border-neutral-100">
-                  <p className="text-xs text-neutral-400 font-medium">
-                    {lang === 'ar' ? 'المستخدم النشط حالياً' : 'Active User Session'}
-                  </p>
-                  <p className="text-sm font-bold text-[#252525]">
-                    {lang === 'ar' ? currentUser.nameAr : currentUser.nameEn}
-                  </p>
-                  <p className="text-xs text-[#B8862B] font-semibold capitalize">
-                    {currentUser.role.replace('_', ' ')}
-                  </p>
+                {/* Header: Logged-in Account Badge */}
+                <div className="flex items-center justify-between px-2 pb-2.5 border-b border-neutral-100">
+                  <span className="text-[11px] font-bold text-neutral-400 uppercase tracking-wider">
+                    {lang === 'ar' ? 'الحساب المسجل حالياً' : 'Logged-in Account'}
+                  </span>
+                  <span className="inline-flex items-center gap-1 text-[10px] text-emerald-700 font-bold bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-full">
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                    {lang === 'ar' ? 'نشط الآن' : 'Active'}
+                  </span>
                 </div>
 
-                <div className="py-2">
-                  <p className="px-3 text-[10px] font-bold text-neutral-400 uppercase tracking-wider mb-1">
-                    {lang === 'ar' ? 'قاعدة البيانات السحابية (Cloud SQL)' : 'Cloud SQL Database'}
-                  </p>
-                  <div className="px-3 py-1.5 mb-2 bg-[#FAF7F0] rounded-xl border border-[#E9DDCA] flex items-center justify-between text-xs">
-                    <div className="flex items-center gap-1.5 text-neutral-700">
-                      <Database className="w-3.5 h-3.5 text-[#B8862B]" />
-                      <span className="font-semibold">PostgreSQL</span>
+                {/* User Identity Card */}
+                <div className="p-3 my-2 bg-[#FAF7F0] rounded-xl border border-[#E9DDCA]/70 flex items-center gap-3">
+                  {authUser?.photoURL ? (
+                    <img
+                      src={authUser.photoURL}
+                      alt="Avatar"
+                      className="w-12 h-12 rounded-xl object-cover border border-[#E9DDCA] shrink-0"
+                    />
+                  ) : (
+                    <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[#B8862B] to-[#8D641D] text-white flex items-center justify-center font-black text-sm shrink-0 shadow-2xs">
+                      {currentUser.username.substring(0, 2).toUpperCase()}
                     </div>
-                    <span className="inline-flex items-center gap-1 text-[10px] text-emerald-700 font-bold bg-emerald-100 px-1.5 py-0.5 rounded">
-                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
-                      {lang === 'ar' ? 'متصل' : 'Connected'}
+                  )}
+
+                  <div className="overflow-hidden flex-1 leading-tight">
+                    <h4 className="text-sm font-bold text-neutral-900 truncate">
+                      {lang === 'ar' ? currentUser.nameAr : currentUser.nameEn}
+                    </h4>
+                    <p className="text-[11px] text-neutral-500 font-mono mt-0.5 truncate">
+                      @{currentUser.username}
+                    </p>
+                    <div className="mt-1 flex items-center gap-1 text-[10px] font-bold text-[#8D641D] bg-[#B8862B]/10 px-2 py-0.5 rounded-md w-fit">
+                      <ShieldCheck className="w-3 h-3 text-[#B8862B]" />
+                      <span className="capitalize">{currentUser.role.replace('_', ' ')}</span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Account Details List */}
+                <div className="space-y-1.5 py-1 text-xs">
+                  {/* Email */}
+                  <div className="flex items-center gap-2 px-2.5 py-1.5 rounded-lg text-neutral-600 bg-neutral-50/70 border border-neutral-100">
+                    <Mail className="w-3.5 h-3.5 text-neutral-400 shrink-0" />
+                    <span className="truncate font-medium text-[11px]">{currentUser.email}</span>
+                  </div>
+
+                  {/* Phone */}
+                  <div className="flex items-center gap-2 px-2.5 py-1.5 rounded-lg text-neutral-600 bg-neutral-50/70 border border-neutral-100">
+                    <Phone className="w-3.5 h-3.5 text-neutral-400 shrink-0" />
+                    <span className="truncate font-mono text-[11px]" dir="ltr">{currentUser.phone}</span>
+                  </div>
+
+                  {/* Branch / Store Location */}
+                  <div className="flex items-center gap-2 px-2.5 py-1.5 rounded-lg text-neutral-600 bg-neutral-50/70 border border-neutral-100">
+                    <MapPin className="w-3.5 h-3.5 text-[#B8862B] shrink-0" />
+                    <span className="truncate text-[11px]">
+                      {lang === 'ar' ? 'سوق البراحة - محل ١٠٥١' : 'Souq Al Baraha - Shop 1051'}
                     </span>
                   </div>
+                </div>
 
-                  {/* Google Auth Status & Button */}
-                  <div className="px-3 py-1.5 mb-2 border-b border-neutral-100">
-                    {authUser ? (
-                      <div className="space-y-1.5">
-                        <div className="flex items-center gap-2">
-                          <img
-                            src={authUser.photoURL || 'https://placehold.co/32x32'}
-                            alt="Google Avatar"
-                            className="w-6 h-6 rounded-full border border-[#E9DDCA]"
-                          />
-                          <div className="overflow-hidden">
-                            <p className="text-xs font-bold text-neutral-800 truncate">
-                              {authUser.displayName || authUser.email}
-                            </p>
-                            <p className="text-[10px] text-neutral-400 truncate">{authUser.email}</p>
-                          </div>
-                        </div>
-                        <button
-                          type="button"
-                          onClick={() => authSignOut()}
-                          className="w-full mt-1 py-1 px-2 text-[11px] text-red-600 font-medium hover:bg-red-50 rounded-lg flex items-center justify-center gap-1 transition-colors cursor-pointer"
-                        >
-                          <LogOut className="w-3 h-3" />
-                          <span>{lang === 'ar' ? 'تسجيل الخروج من Google' : 'Sign Out Google'}</span>
-                        </button>
-                      </div>
-                    ) : (
-                      <button
-                        type="button"
-                        onClick={() => signInWithGoogle()}
-                        className="w-full py-1.5 px-2 bg-white border border-[#E9DDCA] hover:border-[#B8862B] text-neutral-800 text-xs font-bold rounded-xl flex items-center justify-center gap-2 shadow-2xs transition-colors cursor-pointer"
-                      >
-                        <svg className="w-3.5 h-3.5" viewBox="0 0 24 24">
-                          <path
-                            fill="#4285F4"
-                            d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
-                          />
-                          <path
-                            fill="#34A853"
-                            d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
-                          />
-                          <path
-                            fill="#FBBC05"
-                            d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"
-                          />
-                          <path
-                            fill="#EA4335"
-                            d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"
-                          />
-                        </svg>
-                        <span>{lang === 'ar' ? 'تسجيل الدخول عبر Google' : 'Sign in with Google'}</span>
-                      </button>
-                    )}
+                {/* Cloud SQL Database Connected Status */}
+                <div className="mt-2 px-2.5 py-1.5 bg-[#FAF7F0] rounded-xl border border-[#E9DDCA] flex items-center justify-between text-xs">
+                  <div className="flex items-center gap-1.5 text-neutral-700">
+                    <Database className="w-3.5 h-3.5 text-[#B8862B]" />
+                    <span className="font-semibold text-[11px]">Cloud SQL PostgreSQL</span>
                   </div>
+                  <span className="inline-flex items-center gap-1 text-[10px] text-emerald-700 font-bold bg-emerald-100 px-1.5 py-0.5 rounded">
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                    {lang === 'ar' ? 'متصل' : 'Connected'}
+                  </span>
+                </div>
 
-                  <p className="px-3 text-[10px] font-bold text-neutral-400 uppercase tracking-wider mb-1">
-                    {lang === 'ar' ? 'تبديل المستخدم المحلي' : 'Switch Local User (Demo)'}
-                  </p>
-                  {allUsers.map((u) => (
+                {/* Google Linked Account (if linked) */}
+                {authUser && (
+                  <div className="mt-2 p-2 bg-neutral-50 rounded-xl border border-neutral-200/80 flex items-center justify-between text-xs">
+                    <div className="flex items-center gap-2 overflow-hidden">
+                      <svg className="w-3.5 h-3.5 shrink-0" viewBox="0 0 24 24">
+                        <path
+                          fill="#4285F4"
+                          d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
+                        />
+                        <path
+                          fill="#34A853"
+                          d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
+                        />
+                        <path
+                          fill="#FBBC05"
+                          d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"
+                        />
+                        <path
+                          fill="#EA4335"
+                          d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"
+                        />
+                      </svg>
+                      <span className="truncate text-[10px] text-neutral-600 font-medium">
+                        {authUser.email}
+                      </span>
+                    </div>
                     <button
-                      key={u.id}
-                      onClick={() => handleSwitchUser(u)}
-                      className={`w-full flex items-center justify-between px-3 py-1.5 rounded-lg text-xs text-start transition-colors ${
-                        u.id === currentUser.id
-                          ? 'bg-[#FAF7F0] text-[#8D641D] font-bold'
-                          : 'text-neutral-700 hover:bg-neutral-50'
-                      }`}
+                      type="button"
+                      onClick={() => authSignOut()}
+                      className="text-[10px] text-red-600 hover:text-red-700 font-bold px-1.5 py-0.5 hover:bg-red-50 rounded transition-colors cursor-pointer shrink-0"
                     >
-                      <div className="truncate">
-                        <p className="truncate font-medium">{lang === 'ar' ? u.nameAr : u.nameEn}</p>
-                        <p className="text-[10px] text-neutral-400 capitalize">
-                          {u.role.replace('_', ' ')} • PIN: {u.pin}
-                        </p>
-                      </div>
-                      {u.id === currentUser.id && (
-                        <span className="w-2 h-2 rounded-full bg-[#B8862B]" />
-                      )}
+                      {lang === 'ar' ? 'فصل' : 'Unlink'}
                     </button>
-                  ))}
+                  </div>
+                )}
+
+                {/* Sign Out Action Button */}
+                <div className="mt-2.5 pt-2 border-t border-neutral-100">
+                  <button
+                    id="header-logout-btn"
+                    type="button"
+                    onClick={() => {
+                      setShowUserDropdown(false);
+                      if (onLogout) {
+                        onLogout();
+                      } else {
+                        StorageService.logout();
+                        setActiveTab('login');
+                      }
+                    }}
+                    className="w-full flex items-center justify-center gap-2 py-2.5 px-3 rounded-xl bg-red-50 hover:bg-red-100 active:bg-red-200 text-red-700 text-xs font-bold transition-colors cursor-pointer shadow-2xs"
+                  >
+                    <LogOut className="w-3.5 h-3.5" />
+                    <span>{lang === 'ar' ? 'تسجيل الخروج من الحساب' : 'Sign Out of Account'}</span>
+                  </button>
                 </div>
               </div>
             )}

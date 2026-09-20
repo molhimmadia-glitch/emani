@@ -1,6 +1,6 @@
 {
   "name": "Emani Art Craft ERP & POS",
-  "description": "Comprehensive retail ERP, POS, inventory, purchasing, accounting, CRM, and custom order management system for Emani Art Craft in Bahrain.",
+  "description": "Comprehensive retail ERP, touchscreen POS, inventory, purchasing, accounting, CRM, and custom artisan order management platform for Emani Art Craft in Souq Al Baraha, Bahrain.",
   "requestFramePermissions": [],
   "majorCapabilities": [
     "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"

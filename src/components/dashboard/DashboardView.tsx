@@ -128,12 +128,12 @@ export const DashboardView: React.FC<DashboardViewProps> = ({ lang, onNavigate }
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-xl sm:text-2xl font-black text-[#252525]">
-            {lang === 'ar' ? 'لوحة المراقبة وإدارة المتجر' : 'Store Analytics Dashboard'}
+            {lang === 'ar' ? 'لوحة الإدارة والتحليلات المباشرة' : 'Executive Store Analytics & Operations'}
           </h1>
           <p className="text-xs sm:text-sm text-neutral-500">
             {lang === 'ar'
-              ? 'متابعة حية للمبيعات، المخزون، الأرباح، وطلبات المناسبات الخاصة في البحرين'
-              : 'Real-time sales, inventory, profit, and custom orders in Bahrain'}
+              ? 'متابعة حية للمبيعات، المخزون، الأرباح، وطلبات المناسبات التراثية - سوق البراحة، ديار المحرق'
+              : 'Real-time sales, inventory valuation, profit margins, and custom heritage orders in Bahrain'}
           </p>
         </div>
 

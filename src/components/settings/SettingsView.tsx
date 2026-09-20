@@ -21,14 +21,21 @@ import { translations } from '../../services/i18n';
 
 interface SettingsViewProps {
   lang: Language;
+  initialTab?: 'profile' | 'pos' | 'whatsapp' | 'audit';
 }
 
-export const SettingsView: React.FC<SettingsViewProps> = ({ lang }) => {
+export const SettingsView: React.FC<SettingsViewProps> = ({ lang, initialTab = 'profile' }) => {
   const t = translations[lang];
   const currentSettings = StorageService.getSettings();
   const auditLogs = StorageService.getAuditLogs();
 
-  const [activeTab, setActiveTab] = useState<'profile' | 'pos' | 'whatsapp' | 'audit'>('profile');
+  const [activeTab, setActiveTab] = useState<'profile' | 'pos' | 'whatsapp' | 'audit'>(initialTab);
+
+  React.useEffect(() => {
+    if (initialTab) {
+      setActiveTab(initialTab);
+    }
+  }, [initialTab]);
   const [formData, setFormData] = useState<CompanySettings>({ ...currentSettings });
   const [savedSuccess, setSavedSuccess] = useState(false);
 
