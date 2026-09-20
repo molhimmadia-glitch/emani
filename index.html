@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script>
+      (function() {
+        try {
+          if (typeof Window !== 'undefined' && Window.prototype) {
+            var protoDesc = Object.getOwnPropertyDescriptor(Window.prototype, 'fetch');
+            if (protoDesc && protoDesc.get && !protoDesc.set) {
+              Object.defineProperty(Window.prototype, 'fetch', {
+                get: protoDesc.get,
+                set: function(fn) {
+                  Object.defineProperty(this, 'fetch', {
+                    value: fn,
+                    writable: true,
+                    configurable: true,
+                    enumerable: true
+                  });
+                },
+                configurable: true,
+                enumerable: true
+              });
+            }
+          }
+        } catch (_) {}
+
+        try {
+          var origFetch = window.fetch;
+          var winDesc = Object.getOwnPropertyDescriptor(window, 'fetch');
+          if (!winDesc || (winDesc.get && !winDesc.set) || !winDesc.writable) {
+            var activeFetch = origFetch;
+            Object.defineProperty(window, 'fetch', {
+              get: function() {
+                return activeFetch;
+              },
+              set: function(newFetch) {
+                activeFetch = newFetch;
+              },
+              configurable: true,
+              enumerable: true
+            });
+          }
+        } catch (_) {
+          try {
+            var currentFetch = window.fetch;
+            Object.defineProperty(window, 'fetch', {
+              value: currentFetch,
+              writable: true,
+              configurable: true,
+              enumerable: true
+            });
+          } catch (__) {}
+        }
+      })();
+    </script>
+    <title>Emani Art Craft ERP & POS | إيماني آرت كرافت</title>
+    <meta name="description" content="Comprehensive retail ERP, POS, inventory, purchasing, accounting, CRM, and custom order management system for Emani Art Craft in Bahrain." />
+    <meta property="og:title" content="Emani Art Craft | إيماني آرت كرافت - Retail ERP & POS" />
+    <meta property="og:description" content="Comprehensive retail ERP, POS, inventory, purchasing, accounting, CRM, and custom order management system for Emani Art Craft in Bahrain." />
+    <meta property="og:type" content="website" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800&family=Outfit:wght@300;400;500;600;700&family=Great+Vibes&family=Amiri:wght@400;700&display=swap" rel="stylesheet">
+  </head>
+  <body class="bg-[#FAF7F0] text-[#252525] antialiased selection:bg-[#B8862B]/20 selection:text-[#8D641D]">
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
+
